@@ -1,0 +1,28 @@
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+UserInterfaceState.xcuserstate
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Executables and intermediate build artifacts
+bin/
+build/
+
+# Objects and libs
+*.slo
+*.lo
+*.o
+*.obj
+*.a
+*.la
+*.lai
+*.so
+*.so.*
+*.dll
+*.dylib
