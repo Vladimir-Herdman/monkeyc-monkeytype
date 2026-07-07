@@ -22,12 +22,12 @@ void mcmt_cleanup() {
 int main(int argc, char *argv[])
 {
     mcmt_init();
-    char* choice = mcmt_menu();
+    Choice choice = mcmt_menu();
     mcmt_cleanup();
 
-	printf("You chose %s\n\r", choice);
+	printf("You chose gamemode %s with option %s\n\r", choice.mode, choice.option);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 // for ncurses example: ~/code/c/tests/all-libraries/etc/ncurses/pager.c
