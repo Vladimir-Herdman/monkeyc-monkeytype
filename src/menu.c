@@ -129,5 +129,5 @@ Choice mcmt_menu() {
     }
 
     curs_set(1);
-    return (Choice){options[mode - 1].name, options[choice - 1].settings[highlight - 1]};
+    return (Choice){options[mode - 1].name, options[mode - 1].settings[choice - 1]};
 }

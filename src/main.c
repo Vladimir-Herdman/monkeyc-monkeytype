@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     Choice choice = mcmt_menu();
     mcmt_cleanup();
 
-	printf("You chose gamemode %s with option %s\n\r", choice.mode, choice.option);
+	printf("You chose gamemode '%s' with option '%s'.\n\r", choice.mode, choice.option);
 
 	return EXIT_SUCCESS;
 }
