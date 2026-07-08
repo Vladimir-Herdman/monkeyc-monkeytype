@@ -26,3 +26,6 @@ build/
 *.so.*
 *.dll
 *.dylib
+
+# Unneeded files
+**/*.json
