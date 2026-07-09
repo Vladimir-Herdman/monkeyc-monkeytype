@@ -7,7 +7,7 @@
 
 typedef struct {
     bool gameloop;
-    char error_msg[128];
+    char error_msg[256];
 } mcmt_Result;
 
 void mcmt_playmode(mcmt_Result* result, Choice choice);
