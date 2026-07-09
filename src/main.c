@@ -28,8 +28,6 @@ int main(int argc, char *argv[])
     Choice choice = {0};
     while (result.gameloop) {
         choice = mcmt_menu();
-        if (choice.mode == QUIT)
-            break;
         mcmt_playmode(&result, choice);
     }
 

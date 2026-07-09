@@ -21,7 +21,7 @@ static MenuOptions options[] = {
     {"quit", {NULL}},
 };
 static const int full_options_len = (sizeof(options)/sizeof(options[0])) - 1;
-static int choice = 0;
+static int choice = -1;
 
 static void clear_menu(WINDOW* menu_win, int options_len) {
     int x, y, i;	
@@ -44,7 +44,7 @@ static void print_menu(WINDOW *menu_win, int highlight, char** curoptions, int o
     box(menu_win, 0, 0);
     for(i = 0; i < options_len; ++i)
     {
-        if(highlight == i + 1) /* Highlight the present choice */
+        if(highlight == i) /* Highlight the present choice */
         {
             wattron(menu_win, A_REVERSE); 
             mvwprintw(menu_win, y, x, "%s", curoptions[i]);
@@ -59,7 +59,7 @@ static void print_menu(WINDOW *menu_win, int highlight, char** curoptions, int o
 
 Choice mcmt_menu() {
     int row, col;
-    int highlight = 1;
+    int highlight = 0;
     int ch = 0;
 
     getmaxyx(stdscr, row, col);
@@ -87,16 +87,16 @@ Choice mcmt_menu() {
         switch (ch) {
             case 'k':
             case KEY_UP:
-                if(highlight == 1)
-                    highlight = options_len;
+                if(highlight == 0)
+                    highlight = options_len-1;
                 else
                     --highlight;
                 break;
 
             case 'j':
             case KEY_DOWN:
-                if(highlight == options_len)
-                    highlight = 1;
+                if(highlight == options_len-1)
+                    highlight = 0;
                 else 
                     ++highlight;
                 break;
@@ -110,33 +110,41 @@ Choice mcmt_menu() {
                     char* setting;
                     int i = 0;
                     do {
-                        setting = options[highlight-1].settings[i];
+                        setting = options[highlight].settings[i];
                         curoptions[i] = setting;
                         ++i;
                     } while (setting != NULL);
                     options_len = i-1;
-                    highlight = 1;
+                    highlight = 0;
                 }
                 break;
 
             case 'q':
             case 27: //escape
-                //TODO: make this section cleaner.
-                final_choice = true;
-                mode = full_options_len+1;
-                choice = 1;
+                if (final_choice) {
+                    final_choice = false;
+                    highlight = mode;
+                    options_len = full_options_len;
+                    for (int i=0; i<full_options_len; i++)
+                        curoptions[i] = options[i].name;
+                } else {
+                    final_choice = true;
+                    mode = QUIT;
+                    choice = highlight = 0;
+                }
                 break;
 
             default:
-                mvprintw(1, 0, "Character pressed is = %3d Hopefully it can be printed as '%c'", ch, ch);
+                //mvprintw(1, 0, "Character pressed is = %3d Hopefully it can be printed as '%c'", ch, ch);
+                mvprintw(1, 0, "Final choice is: '%s'", final_choice ? "true" : "false");
                 refresh();
                 break;
         }
         print_menu(menu_win, highlight, curoptions, options_len);
-		if(choice != 0 && final_choice)
+		if(choice != -1 && final_choice == true)
 			break;
     }
 
     curs_set(1);
-    return (Choice){(mcmt_Modes)(mode - 1), options[mode - 1].settings[choice - 1]};
+    return (Choice){(mcmt_Modes)(mode), options[mode].settings[choice]};
 }

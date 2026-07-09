@@ -23,6 +23,8 @@ static void quote(mcmt_Result* result, char* option) {
         char* error_msg = "in mcmt_Result quote(mcmt_Result, char*) - Improper option passed to quote.";
         memcpy(result->error_msg, error_msg, sizeof(result->error_msg));
     }
+
+    result->gameloop = false;
 }
 
 void mcmt_playmode(mcmt_Result* result, Choice choice) {
@@ -38,6 +40,9 @@ void mcmt_playmode(mcmt_Result* result, Choice choice) {
         case CUSTOM:
             break;
         case SETTINGS:
+            break;
+        case QUIT:
+            result->gameloop = false;
             break;
     }
 }
