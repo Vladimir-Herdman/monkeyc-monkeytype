@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "menu.h"
+#include "playmode.h"
 
 void mcmt_init() {
     initscr();
@@ -15,17 +16,29 @@ void mcmt_init() {
 
 void mcmt_cleanup() {
     refresh();
-	clrtoeol();
 	endwin();
 }
 
 int main(int argc, char *argv[])
 {
     mcmt_init();
-    Choice choice = mcmt_menu();
+
+    mcmt_Result result = {0};
+    result.gameloop = true;
+    Choice choice = {0};
+    while (result.gameloop) {
+        choice = mcmt_menu();
+        if (choice.mode == QUIT)
+            break;
+        mcmt_playmode(&result, choice);
+    }
+
     mcmt_cleanup();
 
-	printf("You chose gamemode '%s' with option '%s'.\n\r", choice.mode, choice.option);
+	printf("You chose gamemode '%s' with option '%s'.\n\r", modemap[choice.mode], choice.option);
+    if (result.error_msg[0] != '\0') {
+        printf("You also had an error message: %s\n", result.error_msg);
+    }
 
 	return EXIT_SUCCESS;
 }

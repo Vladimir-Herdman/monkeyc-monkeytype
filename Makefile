@@ -28,8 +28,8 @@ NC := \033[0m
 #Building
 $(TARGET_DIR)/$(TARGET_EXEC): $(OBJS)
 	@mkdir -p $(dir $@)
-	@printf '\n  $(GREEN)Compiled binary$(NC): %s\n' $@
-	@$(CC) $(OBJS)  -o $(TARGET_DIR)/$(TARGET_EXEC) $(LDFLAGS) $(LDLIBS)
+	@$(CC) $(OBJS)  -o $(TARGET_DIR)/$(TARGET_EXEC) $(LDFLAGS) $(LDLIBS) && \
+		printf '\n  $(GREEN)Compiled binary$(NC): %s\n' $@
 
 $(BUILD_DIR)/%.c.o: %.c
 	@mkdir -p $(dir $@)

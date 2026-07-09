@@ -10,6 +10,7 @@ typedef struct {
     char* settings[6];
 } MenuOptions;
 
+const char* modemap[] = {"time", "word", "quote", "zen", "custom", "settings", "quit"};
 static MenuOptions options[] = {
     {"time",     {"15", "30", "60", "120", "Custom", NULL}},
     {"word",     {"10", "25", "50", "100", "Custom", NULL}},
@@ -17,16 +18,17 @@ static MenuOptions options[] = {
     {"zen",      {NULL}},
     {"custom",   {NULL}},
     {"settings", {"punctuation", "numbers", NULL}}, //TODO: Figure out settings and what should go in here, or if it should just open a separate application windows.
+    {"quit", {NULL}},
 };
+static const int full_options_len = (sizeof(options)/sizeof(options[0])) - 1;
 static int choice = 0;
 
-static void clear_menu(WINDOW* menu_win) {
+static void clear_menu(WINDOW* menu_win, int options_len) {
     int x, y, i;	
 
     x = 2;
     y = 2;
-    const int base_menu_len = sizeof(options)/sizeof(options[0]);
-    for (int i=0; i<base_menu_len; i++) {
+    for (int i=0; i<full_options_len; i++) {
         wmove(menu_win, y, x);
         wclrtoeol(menu_win);
         ++y;
@@ -34,7 +36,7 @@ static void clear_menu(WINDOW* menu_win) {
 }
 
 static void print_menu(WINDOW *menu_win, int highlight, char** curoptions, int options_len) {
-    clear_menu(menu_win);
+    clear_menu(menu_win, options_len);
     int x, y, i;	
 
     x = 2;
@@ -72,12 +74,11 @@ Choice mcmt_menu() {
 	mvprintw(starty-1, ((col-WIDTH)/2)-(sizeof(menu_text)/4), "%s", menu_text);
     refresh();
 
-    int base_options_len = sizeof(options)/sizeof(options[0]);
-    int* options_len = &base_options_len;
-    char* curoptions[base_options_len+1];
-    for (int i=0; i<base_options_len; i++)
+    int options_len = full_options_len;
+    char* curoptions[full_options_len+1];
+    for (int i=0; i<full_options_len; i++)
         curoptions[i] = options[i].name;
-    print_menu(menu_win, highlight, curoptions, *options_len);
+    print_menu(menu_win, highlight, curoptions, options_len);
     bool final_choice = false;
     int mode = 0;
     while(true) {
@@ -87,17 +88,19 @@ Choice mcmt_menu() {
             case 'k':
             case KEY_UP:
                 if(highlight == 1)
-                    highlight = *options_len;
+                    highlight = options_len;
                 else
                     --highlight;
                 break;
+
             case 'j':
             case KEY_DOWN:
-                if(highlight == *options_len)
+                if(highlight == options_len)
                     highlight = 1;
                 else 
                     ++highlight;
                 break;
+
             case 10: //enter
                 if (final_choice)
                     choice = highlight;
@@ -111,23 +114,29 @@ Choice mcmt_menu() {
                         curoptions[i] = setting;
                         ++i;
                     } while (setting != NULL);
-                    *options_len = i-1;
+                    options_len = i-1;
                     highlight = 1;
                 }
                 break;
+
+            case 'q':
+            case 27: //escape
+                //TODO: make this section cleaner.
+                final_choice = true;
+                mode = full_options_len+1;
+                choice = 1;
+                break;
+
             default:
-                //mvprintw(1, 0, "Character pressed is = %3d Hopefully it can be printed as '%c'", ch, ch);
-                for (int i=0; i<*options_len; i++) {
-                    mvprintw(i, 0, "curoptions[%d]: %s", i, curoptions[i]);
-                }
+                mvprintw(1, 0, "Character pressed is = %3d Hopefully it can be printed as '%c'", ch, ch);
                 refresh();
                 break;
         }
-        print_menu(menu_win, highlight, curoptions, *options_len);
-		if((choice != 0 && final_choice) || ch == 'q')
+        print_menu(menu_win, highlight, curoptions, options_len);
+		if(choice != 0 && final_choice)
 			break;
     }
 
     curs_set(1);
-    return (Choice){options[mode - 1].name, options[mode - 1].settings[choice - 1]};
+    return (Choice){(mcmt_Modes)(mode - 1), options[mode - 1].settings[choice - 1]};
 }
