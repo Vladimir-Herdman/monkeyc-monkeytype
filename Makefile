@@ -5,7 +5,9 @@ TARGET_EXEC := main
 TARGET_DIR := bin
 BUILD_DIR := build
 SRC_DIRS := src include
+DATA_DIR = data
 
+DATA_SRC = $(shell find $(DATA_DIR) -name '*.txt')
 SRC := $(shell find $(SRC_DIRS) -name '*.c')
 OBJS := $(SRC:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
@@ -36,11 +38,17 @@ $(BUILD_DIR)/%.c.o: %.c
 	@printf '  $(YELLOW)Compiling$(NC): %s\n' $@
 	@$(CC) $(CFLAGS) $(CDEFS) -c $< -o $@
 
+#Pregenerate needed data files
+$(shell find $(SRC_DIRS) -path '*data*' -name '*.c'): $(DATA_SRC)
+	@printf '  $(YELLOW)Generating File$(NC): %s\n' $@
+	@./scripts/generate-data.c.sh
+
 #Commands
 .PHONY: clean run
 clean: 
 	@printf '  $(RED)rm -r$(NC) %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/
 	@rm -r build/ bin/ 2>/dev/null || true
+	@touch data/*.txt #Will cause 'make' to rebuild data.c in src/ directory.
 
 run: $(TARGET_DIR)/$(TARGET_EXEC)
 	@./$(TARGET_DIR)/$(TARGET_EXEC)

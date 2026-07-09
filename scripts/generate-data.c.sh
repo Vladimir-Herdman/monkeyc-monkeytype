@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+#This script takes each data/*.txt file and converts it, line-by-line,
+#to an array of char* values in the data.c file in src. Each array is
+#the filename (remove .txt) followed by _data (i.e. 'quotes_data').
+
+source "$(dirname "$0")/globals.sh"
+
+get_project_path() {
+    local path="$(pwd)"
+    path="${path%"$PROJECT_NAME"*}$PROJECT_NAME"
+    printf "%s" "$path"
+}
+
+main() {
+    local project_path="$(get_project_path)"
+    local data_c_file="$(find "$project_path/src" -path '*data*' -name '*.c')"
+
+    for file in "$project_path"/data/*.txt; do
+        local var_name="${file##*/}"; var_name="${var_name%%.txt*}_data"
+        printf "char* %s[] = {" "$var_name" > "$data_c_file"
+        #for each line in file, >> to data.c file.
+        printf "\n};" >> "$data_c_file"
+    done
+}
+
+main

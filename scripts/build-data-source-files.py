@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-"""Generate files for the data directory.
+"""Generate txt source files for the data directory.
 While they'll be tracked with version control (so building's easier for
-anyone using the project), this script still exists as an updator.
+anyone using the project), this will script still exists as an updator.
+
+This script currently builds:
+    - data/quotes.txt
 
 The bottom of the file has the 'main' function if tracing an issue.
 """
@@ -53,6 +56,7 @@ def quotes():
 
         for quote in data:
             _ = f.write(f"{quote["text"]}\n")
+    print(f"{quotes_final_file.split("/")[-1]} built successfully.")
 
 
 def main():

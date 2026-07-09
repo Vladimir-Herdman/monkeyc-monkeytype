@@ -1,0 +1,2 @@
+char* quotes_data[] = {
+};
