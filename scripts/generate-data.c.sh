@@ -18,9 +18,14 @@ main() {
 
     for file in "$project_path"/data/*.txt; do
         local var_name="${file##*/}"; var_name="${var_name%%.txt*}_data"
-        printf "char* %s[] = {" "$var_name" > "$data_c_file"
-        #for each line in file, >> to data.c file.
-        printf "\n};" >> "$data_c_file"
+        printf "char* %s[] = {\n" "$var_name" > "$data_c_file"
+
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            line="${line//\"/\\\"}"
+            printf "    \"%s\",\n" "$line" >> "$data_c_file"
+        done < "$file"
+
+        printf "};" >> "$data_c_file"
     done
 }
 

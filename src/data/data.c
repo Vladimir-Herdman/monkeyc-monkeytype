@@ -1,2 +1,0 @@
-char* quotes_data[] = {
-};
