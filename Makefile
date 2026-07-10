@@ -7,7 +7,7 @@ BUILD_DIR := build
 SRC_DIRS := src include
 DATA_DIR = data
 
-DATA_SRC = $(shell find $(DATA_DIR) -name '*.txt')
+DATA_SRC := $(shell find $(SRC_DIRS) -path '*data*' -name '*.c')
 SRC := $(shell find $(SRC_DIRS) -name '*.c')
 OBJS := $(SRC:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
@@ -38,17 +38,18 @@ $(BUILD_DIR)/%.c.o: %.c
 	@printf '  $(YELLOW)Compiling$(NC): %s\n' $@
 	@$(CC) $(CFLAGS) $(CDEFS) -c $< -o $@
 
-#Pregenerate needed data files
-$(shell find $(SRC_DIRS) -path '*data*' -name '*.c'): $(DATA_SRC)
-	@printf '  $(YELLOW)Generating File$(NC): %s\n' $@
-	@./scripts/generate-data.c.sh
-
 #Commands
-.PHONY: clean run
+.PHONY: clean data run
 clean: 
-	@printf '  $(RED)rm -r$(NC) %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/
+	@printf '  $(RED)rm -r$(NC) %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/ $(DATA_DIR)
 	@rm -r build/ bin/ 2>/dev/null || true
-	@touch data/*.txt #Will cause 'make' to rebuild data.c in src/ directory.
+
+#Generate data/ files and build src/data/data.c.
+data:
+	@printf '  $(YELLOW)Downloading and Building$(NC): %s\n' "$(DATA_DIR) source files"
+	@./scripts/build-data-source-files.py
+	@printf '  $(YELLOW)Building$(NC): %s\n' $(DATA_SRC)
+	@./scripts/generate-data.c.sh
 
 run: $(TARGET_DIR)/$(TARGET_EXEC)
 	@./$(TARGET_DIR)/$(TARGET_EXEC)

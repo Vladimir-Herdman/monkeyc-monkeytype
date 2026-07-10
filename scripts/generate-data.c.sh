@@ -12,11 +12,12 @@ get_project_path() {
     printf "%s" "$path"
 }
 
-main() {
-    #Download and build data/*.txt files
-    ./"$project_path"/scripts/build-data-source-files.py
+normalize_path() {
+    local path="${1##*"$PROJECT_NAME"}"
+    printf "%s" "$path"
+}
 
-    #Fill src/**/data.c with text file strings
+main() {
     local project_path="$(get_project_path)"
     local data_c_file="$(find "$project_path/src" -path '*data*' -name '*.c')"
 
@@ -30,6 +31,7 @@ main() {
         done < "$file"
 
         printf "};" >> "$data_c_file"
+        printf "Added %s contents to %s\n" "$(normalize_path $file)" "$(normalize_path $data_c_file)"
     done
 }
 

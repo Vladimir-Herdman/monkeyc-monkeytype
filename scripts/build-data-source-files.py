@@ -29,7 +29,7 @@ def download(url: str, filepath: str):
     if (response.status_code == 200):
         with open(filepath, "w", encoding="utf-8") as f:
             _ = f.write(response.text)
-        print(f"{filename} downloaded successfully")
+        print(f"{filename} downloaded")
     else:
         print(f"Failed to download {filename}")
 
@@ -56,7 +56,7 @@ def quotes():
 
         for quote in data:
             _ = f.write(f"{quote["text"]}\n")
-    print(f"{quotes_final_file.split("/")[-1]} built successfully.")
+    print(f"{quotes_final_file.split("/")[-1]} built")
 
 
 def main():

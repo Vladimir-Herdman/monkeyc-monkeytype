@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     if (result.error_msg[0] != '\0') {
         printf("You also had an error message: %s\n", result.error_msg);
     }
-    printf("Your line is:\n\t%s\n", quotes_data);
+    printf("Your line is:\n\t%s\n", quotes_data[5]);
 
 	return EXIT_SUCCESS;
 }
