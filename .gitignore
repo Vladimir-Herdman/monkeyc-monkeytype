@@ -13,6 +13,7 @@ ehthumbs_vista.db
 # Executables and intermediate build artifacts
 bin/
 build/
+data/*
 
 # Objects and libs
 *.slo

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "data/data.h"
 #include "menu.h"
 #include "playmode.h"
 
@@ -25,11 +26,6 @@ static void word(mcmt_Result* result, char* option) {
 
 static void quote(mcmt_Result* result, char* option) {
     //TODO: generate off first four lines in quotes.txt lengths to use for all these values, so how to get the line number randomly generated and properly gotten.
-    FILE* f = fopen(quote_filepath, "r");
-    if (!f)
-        return_error("static void quote()", "data/quote.txt not readable.");
-
-    fclose(f);
 
     if (option_is("all")) {
         return_error("static void quote()", "option 'all' quotes not implemented");

@@ -136,7 +136,6 @@ Choice mcmt_menu() {
 
             default:
                 //mvprintw(1, 0, "Character pressed is = %3d Hopefully it can be printed as '%c'", ch, ch);
-                mvprintw(1, 0, "Final choice is: '%s'", final_choice ? "true" : "false");
                 refresh();
                 break;
         }

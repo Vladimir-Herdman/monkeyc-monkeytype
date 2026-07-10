@@ -13,12 +13,16 @@ get_project_path() {
 }
 
 main() {
+    #Download and build data/*.txt files
+    ./"$project_path"/scripts/build-data-source-files.py
+
+    #Fill src/**/data.c with text file strings
     local project_path="$(get_project_path)"
     local data_c_file="$(find "$project_path/src" -path '*data*' -name '*.c')"
 
     for file in "$project_path"/data/*.txt; do
         local var_name="${file##*/}"; var_name="${var_name%%.txt*}_data"
-        printf "char* %s[] = {\n" "$var_name" > "$data_c_file"
+        printf "const char* const %s[] = {\n" "$var_name" > "$data_c_file"
 
         while IFS= read -r line || [[ -n "$line" ]]; do
             line="${line//\"/\\\"}"
