@@ -21,6 +21,11 @@ LDLIBS := -lncurses
 LDFLAGS :=
 CDEFS :=
 
+#Set debug with 'make DEBUG=1'
+ifdef DEBUG
+	CFLAGS += -g3 -DDEBUG -O0
+endif
+
 #Colors
 RED := \033[38;2;255;0;0m
 YELLOW := \033[38;2;255;255;0m
@@ -39,7 +44,7 @@ $(BUILD_DIR)/%.c.o: %.c
 	@$(CC) $(CFLAGS) $(CDEFS) -c $< -o $@
 
 #Commands
-.PHONY: clean data run
+.PHONY: clean data debug run
 clean: 
 	@printf '  $(RED)rm -r$(NC) %s %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/ $(DATA_DIR)/
 	@rm -r build/ bin/ data/ 2>/dev/null || true
@@ -50,6 +55,11 @@ data:
 	@./scripts/build-data-source-files.py
 	@printf '  $(YELLOW)Building$(NC): %s\n' $(DATA_SRC)
 	@./scripts/generate-data.c.sh
+
+debug:
+	@$(MAKE) clean
+	@$(MAKE) DEBUG=1
+	@gdb bin/main
 
 run: $(TARGET_DIR)/$(TARGET_EXEC)
 	@./$(TARGET_DIR)/$(TARGET_EXEC)

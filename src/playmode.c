@@ -51,9 +51,9 @@ static void quote(mcmt_Result* result, char* option) {
     else
         return_error("static void quote()", "Improper option passed to quote.");
 
-    const int qindex = (rand() % end_range) + start_range;
+    const int qindex = (rand() % (end_range-start_range)) + start_range;
     const char* quote = quotes_data[qindex];
-    return_error("hre", quote);
+    return_error("here", quote);
 
     result->gameloop = false;
 }
