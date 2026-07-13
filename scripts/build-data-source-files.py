@@ -47,15 +47,19 @@ def quotes():
         #print(data[0].keys()) #text, source, length, id
         #print([x["length"] for x in data])
 
+    data = [x for x in data if x["text"] != ""]
     with open(quotes_final_file, "w") as f:
         _ = f.write(f"all:{len(data)}\n")
         _ = f.write(f"short:{len([x for x in data if x["length"] <= 100])}\n")
-        _ = f.write(f"medium:{len([x for x in data if 100 > x["length"] <= 200])}\n")
-        _ = f.write(f"long:{len([x for x in data if 200 > x["length"] <= 300])}\n")
+        _ = f.write(f"medium:{len([x for x in data if 100 < x["length"] <= 200])}\n")
+        _ = f.write(f"long:{len([x for x in data if 200 < x["length"] <= 300])}\n")
         _ = f.write(f"thicc:{len([x for x in data if x["length"] > 300])}\n")
 
         for quote in data:
-            _ = f.write(f"{quote["text"]}\n")
+            quote_str = repr(quote["text"]).strip("'").replace("\\'", "'")
+            if ("\"" not in quote_str[1:-1]):
+                quote_str = quote_str.replace("\"", "")
+            _ = f.write(quote_str + "\n")
     print(f"{quotes_final_file.split("/")[-1]} built")
 
 
