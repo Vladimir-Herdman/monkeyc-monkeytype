@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "data/data.h"
@@ -6,15 +7,13 @@
 #include "playmode.h"
 
 #define option_is(str) strncmp(option, (str), sizeof((str))) == 0
-#define return_error(funcstr, errstr)                                                                   \
-    do {                                                                                    \
-        result->gameloop = false;                                                           \
+#define return_error(funcstr, errstr)                                                                                  \
+    do {                                                                                                               \
+        result->gameloop = false;                                                                                      \
         snprintf(result->error_msg, sizeof(result->error_msg), "\n\tin %s > %s\n\t%s", __FILE__, (funcstr), (errstr)); \
-        return;                                                                             \
+        return;                                                                                                        \
     } while (0)
-
-//TODO: Currently only works when calling binary from the monkeyc-monkeytype directory.
-static const char* quote_filepath = "./data/quotes.txt";
+#define pass do { } while (0)
 
 static void time(mcmt_Result* result, char* option) {
     return_error("static void time()", "TODO: not implemented");
@@ -26,25 +25,35 @@ static void word(mcmt_Result* result, char* option) {
 
 static void quote(mcmt_Result* result, char* option) {
     //TODO: generate off first four lines in quotes.txt lengths to use for all these values, so how to get the line number randomly generated and properly gotten.
+    const int nall    = strtol(strchr(quotes_data[0], ':')+1, NULL, 10);
+    const int nshort  = strtol(strchr(quotes_data[1], ':')+1, NULL, 10);
+    const int nmedium = strtol(strchr(quotes_data[2], ':')+1, NULL, 10);
+    const int nlong   = strtol(strchr(quotes_data[3], ':')+1, NULL, 10);
+    const int nthicc  = strtol(strchr(quotes_data[4], ':')+1, NULL, 10);
+    int start_range=5, end_range=nall;
 
-    if (option_is("all")) {
-        return_error("static void quote()", "option 'all' quotes not implemented");
-    }
-    else if (option_is("short")) {
-        return_error("static void quote()", "option 'short' quotes not implemented");
-    }
+    if (option_is("all"))
+        pass;
+    else if (option_is("short"))
+        end_range = nshort+start_range-1;
     else if (option_is("medium")) {
-        return_error("static void quote()", "option 'medium' quotes not implemented");
+        start_range = nshort+start_range;
+        end_range = nmedium+start_range-1;
     }
     else if (option_is("long")) {
-        return_error("static void quote()", "option 'long' quotes not implemented");
+        start_range = nshort+nmedium+start_range;
+        end_range = nlong+start_range-1;
     }
     else if (option_is("thicc")) {
-        return_error("static void quote()", "option 'thicc' quotes not implemented");
+        start_range = nshort+nmedium+nlong+start_range;
+        end_range = nthicc+start_range-1;
     }
-    else {
+    else
         return_error("static void quote()", "Improper option passed to quote.");
-    }
+
+    const int qindex = (rand() % end_range) + start_range;
+    const char* quote = quotes_data[qindex];
+    return_error("hre", quote);
 
     result->gameloop = false;
 }

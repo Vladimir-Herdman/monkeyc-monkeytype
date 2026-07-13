@@ -23,8 +23,8 @@ static MenuOptions options[] = {
 static const int full_options_len = (sizeof(options)/sizeof(options[0])) - 1;
 static int choice = -1;
 
-static void clear_menu(WINDOW* menu_win, int options_len) {
-    int x, y, i;	
+static void clear_menu(WINDOW* menu_win) {
+    int x, y;	
 
     x = 2;
     y = 2;
@@ -36,7 +36,7 @@ static void clear_menu(WINDOW* menu_win, int options_len) {
 }
 
 static void print_menu(WINDOW *menu_win, int highlight, char** curoptions, int options_len) {
-    clear_menu(menu_win, options_len);
+    clear_menu(menu_win);
     int x, y, i;	
 
     x = 2;

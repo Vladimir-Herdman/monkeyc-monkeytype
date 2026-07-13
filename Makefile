@@ -41,8 +41,8 @@ $(BUILD_DIR)/%.c.o: %.c
 #Commands
 .PHONY: clean data run
 clean: 
-	@printf '  $(RED)rm -r$(NC) %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/ $(DATA_DIR)
-	@rm -r build/ bin/ 2>/dev/null || true
+	@printf '  $(RED)rm -r$(NC) %s %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/ $(DATA_DIR)/
+	@rm -r build/ bin/ data/ 2>/dev/null || true
 
 #Generate data/ files and build src/data/data.c.
 data:

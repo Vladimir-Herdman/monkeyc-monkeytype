@@ -2,11 +2,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "menu.h"
 #include "playmode.h"
 
 void mcmt_init() {
+    srand(time(NULL));
     initscr();
     noecho();
     cbreak();
