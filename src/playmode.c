@@ -1,3 +1,4 @@
+#include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +10,6 @@
 #define option_is(str) strncmp(option, (str), sizeof((str))) == 0
 #define return_error(funcstr, errstr)                                                                                  \
     do {                                                                                                               \
-        result->gameloop = false;                                                                                      \
         snprintf(result->error_msg, sizeof(result->error_msg), "\n\tin %s > %s\n\t%s", __FILE__, (funcstr), (errstr)); \
         return;                                                                                                        \
     } while (0)
@@ -71,15 +71,33 @@ static void settings(mcmt_Result* result, char* option) {
     //it to the screen with the ability to type. Make it look like monkeytype.
     //Afterwards, display info about your typeing results.
 static void play(mcmt_Result* result) {
+    if (result->text == NULL) return;
 
+    int row, col;
+    int ch = 0;
+
+    getmaxyx(stdscr, row, col);
+    int startx = col / 2;
+    int starty = row / 2;
+	WINDOW* play_win = newwin(row, col, starty, startx);
+
+	mvprintw(starty-1, (col/2)-(60/2), "%.60s", result->text);
+    wmove(play_win, starty-1, (col/2)-30);
+    refresh();
+    ch = wgetch(play_win);
+
+    wclear(play_win);
+    delwin(play_win);
 }
 
 void mcmt_result_free(mcmt_Result* result) {
+    if (! result->malloced) return;
+
     if (result->text != NULL) free(result->text);
     if (result->text_source != NULL) free(result->text_source);
 }
 
-void mcmt_playmode(mcmt_Result* result, Choice choice) {
+void mcmt_playmode(mcmt_Result* result, mcmt_Choice choice) {
     switch (choice.mode) {
         case TIME:
             time(result, choice.option);
@@ -106,8 +124,7 @@ void mcmt_playmode(mcmt_Result* result, Choice choice) {
             break;
 
         case QUIT:
-            result->gameloop = false;
-            break;
+            return;
     }
 
     play(result);

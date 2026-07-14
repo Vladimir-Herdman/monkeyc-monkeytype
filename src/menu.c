@@ -57,7 +57,7 @@ static void print_menu(WINDOW *menu_win, int highlight, char** curoptions, int o
     wrefresh(menu_win);
 }
 
-Choice mcmt_menu() {
+mcmt_Choice mcmt_menu() {
     int row, col;
     int highlight = 0;
     int ch = 0;
@@ -144,6 +144,8 @@ Choice mcmt_menu() {
 			break;
     }
 
+    clear();
+    delwin(menu_win);
     curs_set(1);
-    return (Choice){(mcmt_Modes)(mode), options[mode].settings[choice]};
+    return (mcmt_Choice){(mcmt_Modes)(mode), options[mode].settings[choice]};
 }

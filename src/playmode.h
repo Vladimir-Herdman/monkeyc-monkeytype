@@ -8,15 +8,14 @@
 typedef struct {
     char* text;
     char* text_source;
-
     float wpm;
 
-    bool  gameloop;
+    bool  malloced;
     char  error_msg[256];
 } mcmt_Result;
 
 void mcmt_result_free(mcmt_Result* result);
 
-void mcmt_playmode(mcmt_Result* result, Choice choice);
+void mcmt_playmode(mcmt_Result* result, mcmt_Choice choice);
 
 #endif //MCMT_PLAYMODE_H

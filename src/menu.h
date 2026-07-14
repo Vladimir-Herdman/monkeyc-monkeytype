@@ -7,8 +7,8 @@ extern const char* modemap[];
 typedef struct {
     mcmt_Modes mode;
     char* option;
-} Choice;
+} mcmt_Choice;
 
-Choice mcmt_menu();
+mcmt_Choice mcmt_menu();
 
 #endif //MCMT_MENU_H

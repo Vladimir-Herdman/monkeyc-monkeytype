@@ -16,9 +16,10 @@ void mcmt_init() {
     use_default_colors();
 }
 
-void mcmt_cleanup() {
+void mcmt_cleanup(mcmt_Result* result) {
     refresh();
 	endwin();
+    mcmt_result_free(result);
 }
 
 int main(int argc, char *argv[])
@@ -26,14 +27,12 @@ int main(int argc, char *argv[])
     mcmt_init();
 
     mcmt_Result result = {0};
-    result.gameloop = true;
-    Choice choice = {0};
-    while (result.gameloop) {
-        choice = mcmt_menu();
-        mcmt_playmode(&result, choice);
-    }
+    mcmt_Choice choice = {0};
 
-    mcmt_cleanup();
+    choice = mcmt_menu();
+    mcmt_playmode(&result, choice);
+
+    mcmt_cleanup(&result);
 
 	printf("You chose gamemode '%s' with option '%s'.\n\r", modemap[choice.mode], choice.option);
     if (result.error_msg[0] != '\0') {
