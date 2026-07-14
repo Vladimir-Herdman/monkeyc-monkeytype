@@ -6,9 +6,16 @@
 #include "menu.h"
 
 typedef struct {
-    bool gameloop;
-    char error_msg[256];
+    char* text;
+    char* text_source;
+
+    float wpm;
+
+    bool  gameloop;
+    char  error_msg[256];
 } mcmt_Result;
+
+void mcmt_result_free(mcmt_Result* result);
 
 void mcmt_playmode(mcmt_Result* result, Choice choice);
 

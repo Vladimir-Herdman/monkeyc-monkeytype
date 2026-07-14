@@ -1,6 +1,11 @@
 #ifndef MCMT_DATA_H
 #define MCMT_DATA_H
 
-extern const char* const quotes_data[];
+typedef struct {
+    char* quote;
+    char* source;
+} mcmt_Quote;
+
+extern const mcmt_Quote quotes_data[];
 
 #endif //MCMT_DATA_H

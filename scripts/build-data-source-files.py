@@ -59,7 +59,8 @@ def quotes():
             quote_str = repr(quote["text"]).strip("'").replace("\\'", "'")
             if ("\"" not in quote_str[1:-1]):
                 quote_str = quote_str.replace("\"", "")
-            _ = f.write(quote_str + "\n")
+            _ = f.write(quote_str + ";;;")
+            _ = f.write(quote["source"] + "\n")
     print(f"{quotes_final_file.split("/")[-1]} built")
 
 

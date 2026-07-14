@@ -24,12 +24,11 @@ static void word(mcmt_Result* result, char* option) {
 }
 
 static void quote(mcmt_Result* result, char* option) {
-    //TODO: generate off first four lines in quotes.txt lengths to use for all these values, so how to get the line number randomly generated and properly gotten.
-    const int nall    = strtol(strchr(quotes_data[0], ':')+1, NULL, 10);
-    const int nshort  = strtol(strchr(quotes_data[1], ':')+1, NULL, 10);
-    const int nmedium = strtol(strchr(quotes_data[2], ':')+1, NULL, 10);
-    const int nlong   = strtol(strchr(quotes_data[3], ':')+1, NULL, 10);
-    const int nthicc  = strtol(strchr(quotes_data[4], ':')+1, NULL, 10);
+    const int nall    = strtol(strchr(quotes_data[0].quote, ':')+1, NULL, 10);
+    const int nshort  = strtol(strchr(quotes_data[1].quote, ':')+1, NULL, 10);
+    const int nmedium = strtol(strchr(quotes_data[2].quote, ':')+1, NULL, 10);
+    const int nlong   = strtol(strchr(quotes_data[3].quote, ':')+1, NULL, 10);
+    const int nthicc  = strtol(strchr(quotes_data[4].quote, ':')+1, NULL, 10);
     int start_range=5, end_range=nall;
 
     if (option_is("all"))
@@ -52,10 +51,8 @@ static void quote(mcmt_Result* result, char* option) {
         return_error("static void quote()", "Improper option passed to quote.");
 
     const int qindex = (rand() % (end_range-start_range)) + start_range;
-    const char* quote = quotes_data[qindex];
-    return_error("here", quote);
-
-    result->gameloop = false;
+    result->text = quotes_data[qindex].quote;
+    result->text_source = quotes_data[qindex].source;
 }
 
 static void zen(mcmt_Result* result) {
@@ -68,6 +65,18 @@ static void custom(mcmt_Result* result) {
 
 static void settings(mcmt_Result* result, char* option) {
     return_error("static void settings()", "TODO: not implemented");
+}
+
+//TODO: take whatever value of 'result' we have, the text, and display
+    //it to the screen with the ability to type. Make it look like monkeytype.
+    //Afterwards, display info about your typeing results.
+static void play(mcmt_Result* result) {
+
+}
+
+void mcmt_result_free(mcmt_Result* result) {
+    if (result->text != NULL) free(result->text);
+    if (result->text_source != NULL) free(result->text_source);
 }
 
 void mcmt_playmode(mcmt_Result* result, Choice choice) {
@@ -100,6 +109,8 @@ void mcmt_playmode(mcmt_Result* result, Choice choice) {
             result->gameloop = false;
             break;
     }
+
+    play(result);
 }
 
 #undef option_is
