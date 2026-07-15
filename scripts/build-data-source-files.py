@@ -49,11 +49,11 @@ def quotes():
 
     data = [x for x in data if x["text"] != ""]
     with open(quotes_final_file, "w") as f:
-        _ = f.write(f"all:{len(data)}\n")
-        _ = f.write(f"short:{len([x for x in data if x["length"] <= 100])}\n")
-        _ = f.write(f"medium:{len([x for x in data if 100 < x["length"] <= 200])}\n")
-        _ = f.write(f"long:{len([x for x in data if 200 < x["length"] <= 300])}\n")
-        _ = f.write(f"thicc:{len([x for x in data if x["length"] > 300])}\n")
+        _ = f.write(f"all:{len(data)};;;\n")
+        _ = f.write(f"short:{len([x for x in data if x["length"] <= 100])};;;\n")
+        _ = f.write(f"medium:{len([x for x in data if 100 < x["length"] <= 200])};;;\n")
+        _ = f.write(f"long:{len([x for x in data if 200 < x["length"] <= 300])};;;\n")
+        _ = f.write(f"thicc:{len([x for x in data if x["length"] > 300])};;;\n")
 
         for quote in data:
             quote_str = repr(quote["text"]).strip("'").replace("\\'", "'")

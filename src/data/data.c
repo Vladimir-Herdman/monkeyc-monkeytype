@@ -1,11 +1,11 @@
 #include "data.h"
 
 const mcmt_Quote quotes_data[] = {
-    {"all:6488"},
-    {"short:926"},
-    {"medium:2051"},
-    {"long:1735"},
-    {"thicc:1776"},
+    {"all:6488", ""},
+    {"short:926", ""},
+    {"medium:2051", ""},
+    {"long:1735", ""},
+    {"thicc:1776", ""},
     {"One and one and one is three.", "The Beatles, Come Together"},
     {"Stop blowing holes in my ship!", "Captain Jack Sparrow, Pirates of the Caribbean: The Curse of the Black Pearl"},
     {"Welcome to the Caribbean, love.", "Captain Jack Sparrow, Pirates of the Caribbean: The Curse of the Black Pearl"},
