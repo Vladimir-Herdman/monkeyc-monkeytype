@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,6 +68,33 @@ static void settings(mcmt_Result* result, char* option) {
     return_error("static void settings()", "TODO: not implemented");
 }
 
+static bool istext(const char c) {
+    if (c >= 33 && c <= 126)
+        return true;
+    return false;
+}
+
+//fill dst from src, and set src to point to new position.
+static void fill_line_nowrap(char* restrict dst, const char** restrict srcp, const int maxlen) {
+    int i=0, rstrip=0;
+    const char* src = *srcp;
+    for (; i<maxlen-1; i++) {
+        const char sc = src[i];
+        dst[i] = sc;
+        if (sc == '\0') goto endfunc;
+    }
+
+    while (istext(src[i-rstrip]))
+        ++rstrip;
+
+    dst[i-rstrip] = ' ';
+    dst[i-rstrip+1] = '\0';
+    --rstrip;
+
+    endfunc:
+    *srcp = (*srcp) + (i - rstrip);
+}
+
 //TODO: take whatever value of 'result' we have, the text, and display
     //it to the screen with the ability to type. Make it look like monkeytype.
     //Afterwards, display info about your typeing results.
@@ -79,10 +107,17 @@ static void play(mcmt_Result* result) {
     getmaxyx(stdscr, row, col);
     int startx = col / 2;
     int starty = row / 2;
-	WINDOW* play_win = newwin(row, col, starty, startx);
+    const int ntext = strlen(result->text);
+    const int nline = 80;
+    char line[150];
+	WINDOW* play_win = newwin(row, col, 0, 0);
 
-	mvprintw(starty-1, (col/2)-(60/2), "%.60s", result->text);
-    wmove(play_win, starty-1, (col/2)-30);
+    const char* linestart = result->text;
+    for (int i=0; *linestart != '\0'; i++) {
+        fill_line_nowrap(line, &linestart, nline);
+        mvwprintw(play_win, starty-1+i, (col/2)-(nline/2), "%s", line);
+    }
+    wmove(play_win, starty-1, (col/2)-(nline/2));
     refresh();
     ch = wgetch(play_win);
 
