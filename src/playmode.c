@@ -95,34 +95,112 @@ static void fill_line_nowrap(char* restrict dst, const char** restrict srcp, con
     *srcp = (*srcp) + (i - rstrip);
 }
 
+static bool is_end_of_line(WINDOW* w) {
+    int y, x, i=0, wch;
+    getyx(w, y, x);
+    while (wmove(w, y, x+(i++)) != ERR) {
+        wch = winch(w) & A_CHARTEXT;
+        if (wch != ' ') {
+            wmove(w, y, x);
+            return false;
+        }
+    }
+    return true;
+}
+
+static void goto_new_line(mcmt_Result* res, WINDOW* w) {
+    int y, x;
+    getyx(w, y, x);
+    wmove(w, y+1, 0);
+    if (is_end_of_line(w))
+        res->play = false;
+}
+
+static enum {
+    DEFAULT = 1,
+    SUCCESS,
+    ERROR,
+};
+
+static void correct_letter(WINDOW* w, const int wch) {
+    wattron(w, COLOR_PAIR(SUCCESS));
+    waddch(w, wch);
+    wattroff(w, COLOR_PAIR(SUCCESS));
+}
+
+static void back_space(WINDOW* w) {
+    int y, x, wch;
+    getyx(w, y, x);
+    if (x == 0) return;
+    wmove(w, y, x-1);
+    wch = winch(w) & A_CHARTEXT;
+    wattron(w, COLOR_PAIR(DEFAULT));
+    waddch(w, wch);
+    wattroff(w, COLOR_PAIR(DEFAULT));
+    wmove(w, y, x-1);
+}
+
+static void error_letter(WINDOW* w, const int wch) {
+    wattron(w, COLOR_PAIR(ERROR));
+    waddch(w, wch);
+    wattroff(w, COLOR_PAIR(ERROR));
+}
+
 //TODO: take whatever value of 'result' we have, the text, and display
     //it to the screen with the ability to type. Make it look like monkeytype.
     //Afterwards, display info about your typeing results.
 static void play(mcmt_Result* result) {
     if (result->text == NULL) return;
+    result->play = true;
 
     int row, col;
-    int ch = 0;
+    int ch, wch;
+
+    init_pair(DEFAULT, -1, -1);
+    init_pair(SUCCESS, COLOR_GREEN, -1);
+    init_pair(ERROR, COLOR_RED, -1);
 
     getmaxyx(stdscr, row, col);
     int startx = col / 2;
     int starty = row / 2;
     const int ntext = strlen(result->text);
     const int nline = 80;
+    const int nlines = ntext/nline + 2;
     char line[150];
-	WINDOW* play_win = newwin(row, col, 0, 0);
+	WINDOW* play_pad = newpad(nlines, col);
 
     const char* linestart = result->text;
     for (int i=0; *linestart != '\0'; i++) {
         fill_line_nowrap(line, &linestart, nline);
-        mvwprintw(play_win, starty-1+i, (col/2)-(nline/2), "%s", line);
+        mvwprintw(play_pad, i, 0, "%s", line);
     }
-    wmove(play_win, starty-1, (col/2)-(nline/2));
+    wmove(play_pad, 0, 0);
     refresh();
-    ch = wgetch(play_win);
+    prefresh(play_pad, 0, 0, 0, 0, row-1, col-1);
+    while (result->play) {
+        ch = wgetch(play_pad);
+        wch = winch(play_pad) & A_CHARTEXT;
 
-    wclear(play_win);
-    delwin(play_win);
+        if (ch == wch) {
+            correct_letter(play_pad, wch);
+        }
+        else if (ch == '1') //REMOVE
+            scroll(play_pad);
+        else if (ch == 127)
+            back_space(play_pad);
+        else {
+            error_letter(play_pad, wch);
+        }
+
+        if (is_end_of_line(play_pad))
+            goto_new_line(result, play_pad);
+
+        //refresh();
+        prefresh(play_pad, 0, 0, 0, 0, row-1, col-1);
+    }
+
+    wclear(play_pad);
+    delwin(play_pad);
 }
 
 void mcmt_result_free(mcmt_Result* result) {

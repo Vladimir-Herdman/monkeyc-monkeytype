@@ -10,6 +10,7 @@ typedef struct {
     char* text_source;
     float wpm;
 
+    bool  play;
     bool  malloced;
     char  error_msg[256];
 } mcmt_Result;
