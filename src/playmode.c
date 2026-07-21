@@ -95,6 +95,12 @@ static void fill_line_nowrap(char* restrict dst, const char** restrict srcp, con
     *srcp = (*srcp) + (i - rstrip);
 }
 
+static enum {
+    DEFAULT = 1,
+    SUCCESS,
+    ERROR,
+};
+
 static bool is_end_of_line(WINDOW* w) {
     int y, x, i=0, wch;
     getyx(w, y, x);
@@ -108,7 +114,7 @@ static bool is_end_of_line(WINDOW* w) {
     return true;
 }
 
-static void goto_new_line(mcmt_Result* res, WINDOW* w) {
+static void goto_next_line(mcmt_Result* res, WINDOW* w) {
     int y, x;
     getyx(w, y, x);
     wmove(w, y+1, 0);
@@ -116,11 +122,19 @@ static void goto_new_line(mcmt_Result* res, WINDOW* w) {
         res->play = false;
 }
 
-static enum {
-    DEFAULT = 1,
-    SUCCESS,
-    ERROR,
-};
+static void goto_prev_line(WINDOW* w) {
+    int y, x, i=0;
+    getyx(w, y, x);
+    wmove(w, y-1, 0);
+    while (!is_end_of_line(w))
+        wmove(w, y-1, ++i);
+    wmove(w, y-1, i-1);
+    const int wch = winch(w) & A_CHARTEXT;
+    wattron(w, COLOR_PAIR(DEFAULT));
+    waddch(w, wch);
+    wattroff(w, COLOR_PAIR(DEFAULT));
+    wmove(w, y-1, i-1);
+}
 
 static void correct_letter(WINDOW* w, const int wch) {
     wattron(w, COLOR_PAIR(SUCCESS));
@@ -131,7 +145,10 @@ static void correct_letter(WINDOW* w, const int wch) {
 static void back_space(WINDOW* w) {
     int y, x, wch;
     getyx(w, y, x);
-    if (x == 0) return;
+    if (x == 0) {
+        if (y != 0) goto_prev_line(w);
+        return;
+    };
     wmove(w, y, x-1);
     wch = winch(w) & A_CHARTEXT;
     wattron(w, COLOR_PAIR(DEFAULT));
@@ -193,7 +210,7 @@ static void play(mcmt_Result* result) {
         }
 
         if (is_end_of_line(play_pad))
-            goto_new_line(result, play_pad);
+            goto_next_line(result, play_pad);
 
         //refresh();
         prefresh(play_pad, 0, 0, 0, 0, row-1, col-1);
