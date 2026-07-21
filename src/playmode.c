@@ -1,4 +1,3 @@
-#include <ctype.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -222,8 +221,12 @@ static void play(mcmt_Result* result) {
             ++nerror;
         }
 
-        if (is_end_of_line(play_pad))
+        int y, x;
+        getyx(play_pad, y, x);
+        if (is_end_of_line(play_pad) && nerror == 0)
             goto_next_line(result, play_pad);
+        else
+            wmove(play_pad, y, x);
 
         prefresh(play_pad, 0, 0, 0, 0, row-1, col-1);
     }
