@@ -95,11 +95,11 @@ static void fill_line_nowrap(char* restrict dst, const char** restrict srcp, con
     *srcp = (*srcp) + (i - rstrip);
 }
 
-static enum {
+typedef enum {
     DEFAULT = 1,
     SUCCESS,
     ERROR,
-};
+} mcmt_COLOR ;
 
 static bool is_end_of_line(WINDOW* w) {
     int y, x, i=0, wch;
@@ -142,19 +142,25 @@ static void correct_letter(WINDOW* w, const int wch) {
     wattroff(w, COLOR_PAIR(SUCCESS));
 }
 
-static void back_space(WINDOW* w) {
+//will return the style of the current character cell.
+static mcmt_COLOR back_space(WINDOW* w) {
     int y, x, wch;
     getyx(w, y, x);
-    if (x == 0) {
-        if (y != 0) goto_prev_line(w);
-        return;
-    };
+
+    if (x == 0 || (mvwinch(w, y, x-1) & A_CHARTEXT) == ' ') {
+        wmove(w, y, x);
+        return DEFAULT;
+    }
+
     wmove(w, y, x-1);
     wch = winch(w) & A_CHARTEXT;
+    mcmt_COLOR cell_colorpair = PAIR_NUMBER(winch(w));
     wattron(w, COLOR_PAIR(DEFAULT));
     waddch(w, wch);
     wattroff(w, COLOR_PAIR(DEFAULT));
     wmove(w, y, x-1);
+
+    return cell_colorpair;
 }
 
 static void error_letter(WINDOW* w, const int wch) {
@@ -194,25 +200,31 @@ static void play(mcmt_Result* result) {
     wmove(play_pad, 0, 0);
     refresh();
     prefresh(play_pad, 0, 0, 0, 0, row-1, col-1);
+    int nerror = 0;
     while (result->play) {
         ch = wgetch(play_pad);
         wch = winch(play_pad) & A_CHARTEXT;
 
-        if (ch == wch) {
-            correct_letter(play_pad, wch);
+        if (ch == 127) {
+            if (back_space(play_pad) == ERROR)
+                --nerror;
         }
+        else if (wch == ' ' && nerror > 0)
+            continue;
+        else if (ch == wch)
+            correct_letter(play_pad, wch);
         else if (ch == '1') //REMOVE
             scroll(play_pad);
-        else if (ch == 127)
-            back_space(play_pad);
         else {
+            if (wch == ' ')
+                continue;
             error_letter(play_pad, wch);
+            ++nerror;
         }
 
         if (is_end_of_line(play_pad))
             goto_next_line(result, play_pad);
 
-        //refresh();
         prefresh(play_pad, 0, 0, 0, 0, row-1, col-1);
     }
 
