@@ -20,6 +20,8 @@ static void time(mcmt_Result* result, char* option) {
 }
 
 static void word(mcmt_Result* result, char* option) {
+    const char** wordarr = english_data;
+    return_error("static void word()", wordarr[0]);
     return_error("static void word()", "TODO: not implemented");
 }
 

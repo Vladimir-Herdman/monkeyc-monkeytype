@@ -51,9 +51,9 @@ clean:
 
 #Generate data/ files and build src/data/data.c.
 data:
-	@printf '  $(YELLOW)Downloading and Building$(NC): %s\n' "$(DATA_DIR) source files"
+	@printf '  $(YELLOW)Downloading and Building$(NC): %s\n' "$(DATA_DIR) *.json and *.txt files"
 	@./scripts/build-data-source-files.py
-	@printf '  $(YELLOW)Building$(NC): %s\n' $(DATA_SRC)
+	@printf '  $(YELLOW)Building$(NC): %s\n' "data/*.c files"
 	@./scripts/generate-data.c.sh
 
 debug:

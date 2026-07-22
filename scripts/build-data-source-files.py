@@ -85,9 +85,10 @@ def words():
         data = list()
         with open(filepath, "r") as f:
             data = json.load(f)["words"]
-        with open(filepath.replace("json", "txt"), "w"):
+        with open(filepath.replace("json", "txt"), "w") as f:
             for word in data:
                 f.write(word + "\n")
+        print(f"{filepath.replace("json", "txt")} built")
 
 
 def main():
