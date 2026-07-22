@@ -23,15 +23,17 @@ def setup():
     DATA_DIR.mkdir(exist_ok=True)
 
 
-def download(url: str, filepath: str):
+def download(url: str, filepath: str) -> bool:
     filename = pathlib.Path(filepath).name
     response = requests.get(url)
     if (response.status_code == 200):
         with open(filepath, "w", encoding="utf-8") as f:
-            _ = f.write(response.text)
+            f.write(response.text)
         print(f"{filename} downloaded")
+        return True
     else:
         print(f"Failed to download {filename}")
+        return False
 
 
 def quotes():
@@ -49,24 +51,49 @@ def quotes():
 
     data = [x for x in data if x["text"] != ""]
     with open(quotes_final_file, "w") as f:
-        _ = f.write(f"all:{len(data)};;;\n")
-        _ = f.write(f"short:{len([x for x in data if x["length"] <= 100])};;;\n")
-        _ = f.write(f"medium:{len([x for x in data if 100 < x["length"] <= 200])};;;\n")
-        _ = f.write(f"long:{len([x for x in data if 200 < x["length"] <= 300])};;;\n")
-        _ = f.write(f"thicc:{len([x for x in data if x["length"] > 300])};;;\n")
+        f.write(f"all:{len(data)};;;\n")
+        f.write(f"short:{len([x for x in data if x["length"] <= 100])};;;\n")
+        f.write(f"medium:{len([x for x in data if 100 < x["length"] <= 200])};;;\n")
+        f.write(f"long:{len([x for x in data if 200 < x["length"] <= 300])};;;\n")
+        f.write(f"thicc:{len([x for x in data if x["length"] > 300])};;;\n")
 
         for quote in data:
             quote_str = repr(quote["text"]).strip("'").replace("\\'", "'")
             if ("\"" not in quote_str[1:-1]):
                 quote_str = quote_str.replace("\"", "")
-            _ = f.write(quote_str + ";;;")
-            _ = f.write(quote["source"] + "\n")
+            f.write(quote_str + ";;;")
+            f.write(quote["source"] + "\n")
     print(f"{quotes_final_file.split("/")[-1]} built")
+
+
+def words():
+    words = [
+        "english", "english_1k", "english_5k", "english_10k", "english_25k",
+        "english_450k", "english_commonly_misspelled", "english_contractions",
+        "english_doubleletter", "english_legal", "english_medical",
+        "english_old", "english_shakespearean",
+    ]
+
+    files = list()
+    for word in words:
+        file_url = f"https://raw.githubusercontent.com/monkeytypegame/monkeytype/refs/heads/master/frontend/static/languages/{word}.json"
+        filepath = str(DATA_DIR / f"{word}.json")
+        if download(file_url, filepath):
+            files.append(filepath)
+
+    for filepath in files:
+        data = list()
+        with open(filepath, "r") as f:
+            data = json.load(f)["words"]
+        with open(filepath.replace("json", "txt"), "w"):
+            for word in data:
+                f.write(word + "\n")
 
 
 def main():
     setup()
     quotes()
+    words()
 
 
 if __name__ == "__main__":
