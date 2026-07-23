@@ -40,8 +40,8 @@ static void word(mcmt_Result* result, char* option) {
                 return_error("static void word", "realloc failure for result->text");
             result->text = temp;
         }
-        strlcat(result->text, word, sizeof(result->text)*str_size);
-        strlcat(result->text, (i == (nwords-1) ? "." : " "), sizeof(result->text)*str_size);
+        strncat(result->text, word, strlen(word));
+        strncat(result->text, (i == (nwords-1) ? "." : " "), 1);
     }
     return_error("static void word", result->text);
 }
