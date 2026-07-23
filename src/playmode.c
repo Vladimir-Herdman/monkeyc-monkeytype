@@ -20,9 +20,30 @@ static void time(mcmt_Result* result, char* option) {
 }
 
 static void word(mcmt_Result* result, char* option) {
+    //TODO: Get array from options of which english type to use.
     const char** wordarr = english_data;
-    return_error("static void word()", wordarr[0]);
-    return_error("static void word()", "TODO: not implemented");
+    const int nwords = strtol(option, NULL, 10);
+    int str_size=100, cur_size=0;
+    result->text = malloc(sizeof(char)*str_size);
+    result->text[0] = '\0';
+    int windex;
+    const char* word;
+    for (int i=0; i<nwords; i++) {
+        //TODO: Get better length of the array used for bound generation of random index in array.
+        windex = rand() % sizeof((*wordarr));
+        word = &(*wordarr)[windex];
+        cur_size += strlen(word) + 1;
+        if (cur_size >= str_size) {
+            str_size *= 1.5;
+            char* temp = realloc(result->text, str_size);
+            if (temp == NULL)
+                return_error("static void word", "realloc failure for result->text");
+            result->text = temp;
+        }
+        strlcat(result->text, word, sizeof(result->text)*str_size);
+        strlcat(result->text, (i == (nwords-1) ? "." : " "), sizeof(result->text)*str_size);
+    }
+    return_error("static void word", result->text);
 }
 
 static void quote(mcmt_Result* result, char* option) {
@@ -274,7 +295,8 @@ void mcmt_playmode(mcmt_Result* result, mcmt_Choice choice) {
             return;
     }
 
-    play(result);
+    if (result->error_msg[0] == '\0')
+        play(result);
 }
 
 #undef option_is
