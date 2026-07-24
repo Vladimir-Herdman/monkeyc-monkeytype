@@ -54,6 +54,7 @@ words() {
         local c_file="$data_dir_path/$data_name.c"
         {
             printf "%s\n\n" '#include "data.h"'
+            printf "const int n%s = %s;\n" "$var_name" "$(wc -l "$file" | cut -d ' ' -f1)"
             printf "const char* %s[] = {\n" "$var_name"
 
             while IFS= read -r line || [[ -n "$line" ]]; do
@@ -62,7 +63,8 @@ words() {
 
             printf "};"
         } > "$c_file"
-        printf "extern const char* %s[];\n" "$var_name" >> "$data_h_path"
+        printf "extern const int n%s;\n" "$var_name" >> "$data_h_path"
+        printf "extern const char* %s[];\n\n" "$var_name" >> "$data_h_path"
         printf "Added %s contents to %s\n" "$(normalize_path "$file")" "$(normalize_path "$c_file")"
     done
 }
@@ -84,7 +86,7 @@ main() {
     quotes "$data_dir_path" "$data_h_path"
     words "$data_dir_path" "$data_h_path"
 
-    printf "\n%s" "#endif //MCMT_DATA_H" >> "$data_h_path"
+    printf "%s" "#endif //MCMT_DATA_H" >> "$data_h_path"
 }
 
 main

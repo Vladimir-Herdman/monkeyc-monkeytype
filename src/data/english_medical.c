@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_medical_data = 580;
 const char* english_medical_data[] = {
     "incontinence",
     "infarct",

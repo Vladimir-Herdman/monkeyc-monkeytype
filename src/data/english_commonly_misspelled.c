@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_commonly_misspelled_data = 1729;
 const char* english_commonly_misspelled_data[] = {
     "caused",
     "ultimately",

@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_doubleletter_data = 202;
 const char* english_doubleletter_data[] = {
     "been",
     "rook",

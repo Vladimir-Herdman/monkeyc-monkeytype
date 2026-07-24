@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_25k_data = 24141;
 const char* english_25k_data[] = {
     "plug",
     "rounders",

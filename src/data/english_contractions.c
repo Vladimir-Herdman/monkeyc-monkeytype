@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_contractions_data = 183;
 const char* english_contractions_data[] = {
     "a'ight",
     "ain't",

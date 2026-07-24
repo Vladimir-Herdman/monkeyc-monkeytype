@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_1k_data = 1000;
 const char* english_1k_data[] = {
     "the",
     "of",

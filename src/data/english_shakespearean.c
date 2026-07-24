@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_shakespearean_data = 193;
 const char* english_shakespearean_data[] = {
     "hark",
     "thou",

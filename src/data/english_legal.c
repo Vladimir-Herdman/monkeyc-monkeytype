@@ -1,5 +1,6 @@
 #include "data.h"
 
+const int nenglish_legal_data = 1102;
 const char* english_legal_data[] = {
     "abandonment",
     "abet",
