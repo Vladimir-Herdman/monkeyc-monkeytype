@@ -22,6 +22,7 @@ static void time(mcmt_Result* result, char* option) {
 static void word(mcmt_Result* result, char* option) {
     //TODO: Get array from options of which english type to use.
     const char** wordarr = english_data;
+    const int nwordarr = nenglish_data;
     const int nwords = strtol(option, NULL, 10);
     int str_size=100, cur_size=0;
     result->text = malloc(sizeof(char)*str_size);
@@ -29,9 +30,8 @@ static void word(mcmt_Result* result, char* option) {
     int windex;
     const char* word;
     for (int i=0; i<nwords; i++) {
-        //TODO: Get better length of the array used for bound generation of random index in array.
-        windex = rand() % sizeof((*wordarr));
-        word = &(*wordarr)[windex];
+        windex = rand() % nwordarr;
+        word = wordarr[windex];
         cur_size += strlen(word) + 1;
         if (cur_size >= str_size) {
             str_size *= 1.5;
@@ -43,7 +43,6 @@ static void word(mcmt_Result* result, char* option) {
         strncat(result->text, word, strlen(word));
         strncat(result->text, (i == (nwords-1) ? "." : " "), 1);
     }
-    return_error("static void word", result->text);
 }
 
 static void quote(mcmt_Result* result, char* option) {
