@@ -125,6 +125,7 @@ typedef enum {
 static bool is_end_of_line(WINDOW* w) {
     int y, x, i=0, wch;
     getyx(w, y, x);
+
     while (wmove(w, y, x+(i++)) != ERR) {
         wch = winch(w) & A_CHARTEXT;
         if (wch != ' ') {
@@ -132,11 +133,45 @@ static bool is_end_of_line(WINDOW* w) {
             return false;
         }
     }
+    wmove(w, y, x);
     return true;
 }
 
+//will return the style of the current character cell.
+static mcmt_COLOR back_space(WINDOW* w) {
+    int y, x, wch;
+    getyx(w, y, x);
+
+    if (x == 0 || (mvwinch(w, y, x-1) & A_CHARTEXT) == ' ') {
+        wmove(w, y, x);
+        return DEFAULT;
+    }
+
+    wmove(w, y, x-1);
+    wch = winch(w) & A_CHARTEXT;
+    mcmt_COLOR cell_colorpair = PAIR_NUMBER(winch(w));
+    wattron(w, COLOR_PAIR(DEFAULT));
+    waddch(w, wch);
+    wattroff(w, COLOR_PAIR(DEFAULT));
+    wmove(w, y, x-1);
+
+    return cell_colorpair;
+}
+
 static void goto_next_line(mcmt_Result* res, WINDOW* w) {
-    int y, x;
+    int y, maxy, x, maxx, ch=0;
+    getyx(w, y, x);
+    getmaxyx(w, maxy, maxx);
+    if (y == (maxy - 1)) {
+        res->play = false;
+        return;
+    }
+    while ((ch = wgetch(w)) != ' ')
+        if (ch == 127) {
+            back_space(w);
+            return;
+        }
+
     getyx(w, y, x);
     wmove(w, y+1, 0);
     if (is_end_of_line(w))
@@ -161,27 +196,6 @@ static void correct_letter(WINDOW* w, const int wch) {
     wattron(w, COLOR_PAIR(SUCCESS));
     waddch(w, wch);
     wattroff(w, COLOR_PAIR(SUCCESS));
-}
-
-//will return the style of the current character cell.
-static mcmt_COLOR back_space(WINDOW* w) {
-    int y, x, wch;
-    getyx(w, y, x);
-
-    if (x == 0 || (mvwinch(w, y, x-1) & A_CHARTEXT) == ' ') {
-        wmove(w, y, x);
-        return DEFAULT;
-    }
-
-    wmove(w, y, x-1);
-    wch = winch(w) & A_CHARTEXT;
-    mcmt_COLOR cell_colorpair = PAIR_NUMBER(winch(w));
-    wattron(w, COLOR_PAIR(DEFAULT));
-    waddch(w, wch);
-    wattroff(w, COLOR_PAIR(DEFAULT));
-    wmove(w, y, x-1);
-
-    return cell_colorpair;
 }
 
 static void error_letter(WINDOW* w, const int wch) {
@@ -209,7 +223,7 @@ static void play(mcmt_Result* result) {
     int starty = row / 2;
     const int ntext = strlen(result->text);
     const int nline = 80;
-    const int nlines = ntext/nline + 2;
+    const int nlines = ntext/nline + 1;
     char line[150];
 	WINDOW* play_pad = newpad(nlines, col);
 
@@ -245,8 +259,10 @@ static void play(mcmt_Result* result) {
 
         int y, x;
         getyx(play_pad, y, x);
-        if (is_end_of_line(play_pad) && nerror == 0)
+        if (is_end_of_line(play_pad) && nerror == 0) {
+            prefresh(play_pad, 0, 0, 0, 0, row-1, col-1);
             goto_next_line(result, play_pad);
+        }
         else
             wmove(play_pad, y, x);
 
