@@ -4,7 +4,7 @@
 TARGET_EXEC := main
 TARGET_DIR := bin
 BUILD_DIR := build
-SRC_DIRS := src include
+SRC_DIRS := src
 DATA_DIR = data
 
 DATA_SRC := $(shell find $(SRC_DIRS) -path '*data*' -name '*.c')

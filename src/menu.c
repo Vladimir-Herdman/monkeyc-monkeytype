@@ -2,15 +2,26 @@
 
 #include "menu.h"
 
-static const int WIDTH = 30;
-static const int HEIGHT = 10;
 
 typedef struct {
     char* name;
     char* settings[6];
 } MenuOptions;
 
-const char* modemap[] = {"time", "word", "quote", "zen", "custom", "settings", "quit"};
+
+static const int WIDTH = 30;
+static const int HEIGHT = 10;
+
+const char* modemap[] = {
+    [TIME]     = "time",
+    [WORD]     = "word",
+    [QUOTE]    = "quote",
+    [ZEN]      = "zen",
+    [CUSTOM]   = "custom",
+    [SETTINGS] = "settings",
+    [QUIT]     = "quit",
+};
+
 static MenuOptions options[] = {
     {"time",     {"15", "30", "60", "120", "Custom", NULL}},
     {"word",     {"10", "25", "50", "100", "Custom", NULL}},
@@ -20,6 +31,7 @@ static MenuOptions options[] = {
     {"settings", {"punctuation", "numbers", NULL}}, //TODO: Figure out settings and what should go in here, or if it should just open a separate application windows.
     {"quit", {NULL}},
 };
+
 static const int full_options_len = (sizeof(options)/sizeof(options[0])) - 1;
 static int choice = -1;
 
@@ -56,6 +68,7 @@ static void print_menu(WINDOW *menu_win, int highlight, char** curoptions, int o
     }
     wrefresh(menu_win);
 }
+
 
 mcmt_Choice mcmt_menu() {
     int row, col;
