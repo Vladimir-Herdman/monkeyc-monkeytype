@@ -4,7 +4,7 @@
 //These methods exist to setup result->text so that mcmt_playmode can
 //then start a typing session no matter the mode (generally).
 
-#include "result.h"
+#include "ds/result.h"
 
 
 typedef void (*SetupModeFuncPtr)(mcmt_Result*, char* option);

@@ -7,7 +7,7 @@ BUILD_DIR := build
 SRC_DIRS := src
 DATA_DIR = data
 
-DATA_SRC := $(shell find $(SRC_DIRS) -path '*data*' -name '*.c')
+DATA_SRC := $(shell find $(SRC_DIRS) -path '*datafiles*' -name '*.[ch]')
 SRC := $(shell find $(SRC_DIRS) -name '*.c')
 OBJS := $(SRC:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
@@ -21,7 +21,7 @@ LDLIBS := -lncurses
 LDFLAGS :=
 CDEFS :=
 
-#Set debug with 'make DEBUG=1'
+#Set debug with 'make DEBUG=1'. Also can use 'make debug'.
 ifdef DEBUG
 	CFLAGS += -g3 -DDEBUG -O0
 endif

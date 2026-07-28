@@ -2,9 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "menu.h"
-#include "mode_setup.h"
-#include "playmode.h"
+#include "play/mode_setup.h"
+#include "play/playmode.h"
 
 #define return_error(funcstr, errstr)                                                                                  \
     do {                                                                                                               \
@@ -104,20 +103,6 @@ static void goto_next_line(mcmt_Result* res, WINDOW* w) {
         res->play = false;
 }
 
-static void goto_prev_line(WINDOW* w) {
-    int y, x, i=0;
-    getyx(w, y, x);
-    wmove(w, y-1, 0);
-    while (!is_end_of_line(w))
-        wmove(w, y-1, ++i);
-    wmove(w, y-1, i-1);
-    const int wch = winch(w) & A_CHARTEXT;
-    wattron(w, COLOR_PAIR(DEFAULT));
-    waddch(w, wch);
-    wattroff(w, COLOR_PAIR(DEFAULT));
-    wmove(w, y-1, i-1);
-}
-
 static void correct_letter(WINDOW* w, const int wch) {
     wattron(w, COLOR_PAIR(SUCCESS));
     waddch(w, wch);
@@ -145,8 +130,6 @@ static void play(mcmt_Result* result) {
     init_pair(ERROR, COLOR_RED, -1);
 
     getmaxyx(stdscr, row, col);
-    int startx = col / 2;
-    int starty = row / 2;
     const int ntext = strlen(result->text);
     const int nline = 80;
     const int nlines = ntext/nline + 1;
@@ -199,12 +182,14 @@ static void play(mcmt_Result* result) {
     delwin(play_pad);
 }
 
-//TODO: Add a settings menu. Once done, game loop should restart back at the main menu.
+//TODO: Add a settings screen. Once done, game loop should restart back at the main menu.
 static void settings(mcmt_Result* result, char* option) {
+    if (option != NULL) option[0] = '\0'; //get rid of warning so it just fits in map.
     return_error("static void settings()", "TODO: not implemented");
 }
 
 static void quit(mcmt_Result* result, char* option) {
+    if (option != NULL) option[0] = '\0'; //get rid of warning so it just fits in map.
     result->play = false;
 }
 

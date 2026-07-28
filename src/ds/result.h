@@ -1,5 +1,5 @@
-#ifndef MCMT_RESULT_H
-#define MCMT_RESULT_H
+#ifndef MCMT_DS_RESULT_H
+#define MCMT_DS_RESULT_H
 
 #include <stdbool.h>
 
@@ -19,4 +19,4 @@ void mcmt_result_init(mcmt_Result* result);
 void mcmt_result_free(mcmt_Result* result);
 
 
-#endif //MCMT_RESULT_H
+#endif //MCMT_DS_RESULT_H

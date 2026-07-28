@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "data/data.h"
-#include "mode_setup.h"
+#include "datafiles/data.h"
+#include "play/mode_setup.h"
 
 #define option_is(str) strncmp(option, (str), sizeof((str))) == 0
 #define return_error(funcstr, errstr)                                                                                  \
@@ -15,6 +15,7 @@
 
 
 void mcmt_time_setup(mcmt_Result* result, char* option) {
+    if (option != NULL) option[0] = '\0'; //REMOVE. For now until implemented, to get rid of option warning.
     return_error("static void time()", "TODO: not implemented");
 }
 
@@ -77,10 +78,12 @@ void mcmt_quote_setup(mcmt_Result* result, char* option) {
 }
 
 void mcmt_zen_setup(mcmt_Result* result, char* option) {
+    if (option != NULL) option[0] = '\0'; //get rid of warning so it just fits in map.
     return_error("static void zen()", "TODO: not implemented");
 }
 
 void mcmt_custom_setup(mcmt_Result* result, char* option) {
+    if (option != NULL) option[0] = '\0'; //get rid of warning so it just fits in map.
     return_error("static void custom()", "TODO: not implemented");
 }
 

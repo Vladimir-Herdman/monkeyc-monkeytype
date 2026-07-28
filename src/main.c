@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "menu.h"
-#include "playmode.h"
+#include "ds/choice.h"
+#include "ds/result.h"
+#include "screens/menu.h"
+#include "play/playmode.h"
 
 
 void mcmt_init(mcmt_Result* result) {
@@ -31,7 +33,7 @@ int main(int argc, char *argv[])
 
     mcmt_init(&result);
 
-    choice = mcmt_menu();
+    choice = mcmt_startingmenu();
     mcmt_playmode(&result, choice);
 
     mcmt_cleanup(&result);

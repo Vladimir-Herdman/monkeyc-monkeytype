@@ -71,7 +71,7 @@ words() {
 
 main() {
     local project_path="$(get_project_path)"
-    local data_dir_path="$(find "$project_path/src" -path '*data')"
+    local data_dir_path="$(find "$project_path/src" -path '*datafiles' -type d)"
     local data_h_path="$(find "$project_path/src" -path '*data*' -name 'data.h')"
 
     {

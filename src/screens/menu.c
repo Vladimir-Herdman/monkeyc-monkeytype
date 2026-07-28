@@ -1,6 +1,6 @@
 #include <ncurses.h>
 
-#include "menu.h"
+#include "screens/menu.h"
 
 
 typedef struct {
@@ -70,7 +70,7 @@ static void print_menu(WINDOW *menu_win, int highlight, char** curoptions, int o
 }
 
 
-mcmt_Choice mcmt_menu() {
+mcmt_Choice mcmt_startingmenu() {
     int row, col;
     int highlight = 0;
     int ch = 0;
