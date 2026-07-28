@@ -75,9 +75,9 @@ main() {
     local data_h_path="$(find "$project_path/src" -path '*data*' -name 'data.h')"
 
     {
-        printf "%s\n" "#ifndef MCMT_DATA_H"
-        printf "%s\n\n" "#define MCMT_DATA_H"
-        printf "%s\n\n" "typedef struct {"
+        printf "%s\n" "#ifndef MCMT_FILEPATHS_DATA_H"
+        printf "%s\n\n\n" "#define MCMT_FILEPATHS_DATA_H"
+        printf "%s\n" "typedef struct {"
         printf "    %s\n" "char* quote;"
         printf "    %s\n" "char* source;"
         printf "%s\n\n" "} mcmt_Quote;"
@@ -86,7 +86,7 @@ main() {
     quotes "$data_dir_path" "$data_h_path"
     words "$data_dir_path" "$data_h_path"
 
-    printf "\n%s" "#endif //MCMT_DATA_H" >> "$data_h_path"
+    printf "\n%s" "#endif //MCMT_FILEPATHS_DATA_H" >> "$data_h_path"
 }
 
 main

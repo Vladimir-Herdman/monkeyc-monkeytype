@@ -1,5 +1,6 @@
-#ifndef MCMT_DATA_H
-#define MCMT_DATA_H
+#ifndef MCMT_FILEPATHS_DATA_H
+#define MCMT_FILEPATHS_DATA_H
+
 
 typedef struct {
     char* quote;
@@ -47,4 +48,5 @@ extern const char* english_old_data[];
 extern const int nenglish_shakespearean_data;
 extern const char* english_shakespearean_data[];
 
-#endif //MCMT_DATA_H
+
+#endif //MCMT_FILEPATHS_DATA_H

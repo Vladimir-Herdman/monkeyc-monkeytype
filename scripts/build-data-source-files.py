@@ -25,6 +25,10 @@ def setup():
 
 def download(url: str, filepath: str) -> bool:
     filename = pathlib.Path(filepath).name
+    if (pathlib.Path(filepath).is_file()):
+        print(f"{filename} already downloaded and in data/")
+        return True
+
     response = requests.get(url)
     if (response.status_code == 200):
         with open(filepath, "w", encoding="utf-8") as f:
@@ -42,6 +46,9 @@ def quotes():
     quotes_final_file = str(DATA_DIR / "quotes.txt")
 
     download(quotes_url, quotes_filepath)
+    if (pathlib.Path(quotes_final_file).is_file()):
+        print(f"{quotes_final_file} already built and in dir/")
+        return
     data = list()
     with open(quotes_filepath, "r") as f:
         data = json.load(f)["quotes"]
@@ -82,13 +89,18 @@ def words():
             files.append(filepath)
 
     for filepath in files:
+        txtfilepath = filepath.replace("json", "txt")
+        if (pathlib.Path(txtfilepath).is_file()):
+            print(f"{txtfilepath} already built and in data/")
+            continue
+
         data = list()
         with open(filepath, "r") as f:
             data = json.load(f)["words"]
-        with open(filepath.replace("json", "txt"), "w") as f:
+        with open(txtfilepath, "w") as f:
             for word in data:
                 f.write(word + "\n")
-        print(f"{filepath.replace("json", "txt")} built")
+        print(f"{txtfilepath} built")
 
 
 def main():
