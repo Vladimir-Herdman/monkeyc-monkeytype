@@ -10,7 +10,7 @@
 #include "play/playmode.h"
 
 
-void mcmt_init(mcmt_Result* result) {
+static void mcmt_init(mcmt_Result* result) {
     srand(time(NULL));
     initscr();
     noecho();
@@ -20,7 +20,7 @@ void mcmt_init(mcmt_Result* result) {
     mcmt_result_init(result);
 }
 
-void mcmt_cleanup(mcmt_Result* result) {
+static void mcmt_cleanup(mcmt_Result* result) {
     refresh();
 	endwin();
     mcmt_result_free(result);
