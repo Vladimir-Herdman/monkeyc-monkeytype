@@ -27,16 +27,11 @@ ifdef DEBUG
 endif
 
 #Colors
-RED := \033[38;2;255;0;0m
-YELLOW := \033[38;2;255;255;0m
-GREEN := \033[38;2;21;204;4m
-NC := \033[0m
-
-ifdef VIM
-	RED := 
-	YELLOW := 
-	GREEN := 
-	NC := 
+ifndef VIM
+	RED := \033[38;2;255;0;0m
+	YELLOW := \033[38;2;255;255;0m
+	GREEN := \033[38;2;21;204;4m
+	NC := \033[0m
 endif
 
 #Building
@@ -51,7 +46,7 @@ $(BUILD_DIR)/%.c.o: %.c
 	@$(CC) $(CFLAGS) $(CDEFS) -c $< -o $@
 
 #Commands
-.PHONY: clean data debug run test
+.PHONY: clean data debug run
 clean: 
 	@printf '  $(RED)rm -r$(NC) %s %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/ $(DATA_DIR)/
 	@rm -r build/ bin/ data/ 2>/dev/null || true
@@ -70,8 +65,5 @@ debug:
 
 run: $(TARGET_DIR)/$(TARGET_EXEC)
 	@./$(TARGET_DIR)/$(TARGET_EXEC)
-
-test:
-	@printf "%s\n" $(APPLE)
 
 -include $(DEPS)
