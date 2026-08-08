@@ -32,10 +32,17 @@ YELLOW := \033[38;2;255;255;0m
 GREEN := \033[38;2;21;204;4m
 NC := \033[0m
 
+ifdef VIM
+	RED := 
+	YELLOW := 
+	GREEN := 
+	NC := 
+endif
+
 #Building
 $(TARGET_DIR)/$(TARGET_EXEC): $(OBJS)
 	@mkdir -p $(dir $@)
-	@$(CC) $(OBJS)  -o $(TARGET_DIR)/$(TARGET_EXEC) $(LDFLAGS) $(LDLIBS) && \
+	@$(CC) $(OBJS) -o $(TARGET_DIR)/$(TARGET_EXEC) $(LDFLAGS) $(LDLIBS) && \
 		printf '\n  $(GREEN)Compiled binary$(NC): %s\n' $@
 
 $(BUILD_DIR)/%.c.o: %.c
@@ -44,7 +51,7 @@ $(BUILD_DIR)/%.c.o: %.c
 	@$(CC) $(CFLAGS) $(CDEFS) -c $< -o $@
 
 #Commands
-.PHONY: clean data debug run
+.PHONY: clean data debug run test
 clean: 
 	@printf '  $(RED)rm -r$(NC) %s %s %s\n' $(BUILD_DIR)/ $(TARGET_DIR)/ $(DATA_DIR)/
 	@rm -r build/ bin/ data/ 2>/dev/null || true
@@ -63,5 +70,8 @@ debug:
 
 run: $(TARGET_DIR)/$(TARGET_EXEC)
 	@./$(TARGET_DIR)/$(TARGET_EXEC)
+
+test:
+	@printf "%s\n" $(APPLE)
 
 -include $(DEPS)
